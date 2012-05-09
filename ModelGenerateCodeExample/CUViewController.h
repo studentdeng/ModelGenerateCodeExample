@@ -14,5 +14,6 @@
 @property (nonatomic, retain) IBOutlet UITextView *textView;
 
 - (IBAction)create:(id)sender;
+- (IBAction)readDataFromFile:(id)sender;
 
 @end
