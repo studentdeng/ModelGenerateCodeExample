@@ -8,6 +8,7 @@
 
 #import "CUViewController.h"
 #import "CUGenerateClass.h"
+#import "CUJSONParser.h"
 
 @interface CUViewController ()
 
@@ -69,7 +70,40 @@
     
     [generateClass createHeader];
     [generateClass createImp];
+}
 
+- (IBAction)readDataFromFile:(id)sender
+{
+    NSString *fileName = self.classNameField.text;
+    NSString *inPath = [NSHomeDirectory() stringByAppendingPathComponent:fileName];
+    
+    CUJSONParser *jsonParser = [[[CUJSONParser alloc] init] autorelease];
+    
+    if ([jsonParser parserDictionaryJSON:inPath]) {
+        NSArray *properList = [jsonParser getResult];
+        if ([properList count] == 0 || [fileName length] == 0) {
+            
+            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"" 
+                                                           message:@"properList eror" 
+                                                          delegate:nil 
+                                                 cancelButtonTitle:@"ok" 
+                                                 otherButtonTitles:nil];
+            
+            [view show];
+            
+            [view release];
+            
+            return;
+        }
+        
+        CUGenerateClass *generateClass = [[[CUGenerateClass alloc] 
+                                                    initWithPropertyList:properList 
+                                                                className:fileName] 
+                                                autorelease];
+        
+        [generateClass createHeader];
+        [generateClass createImp];
+    }
 }
 
 @end
